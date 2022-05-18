@@ -1,12 +1,25 @@
 import { Router, Request, Response } from 'express';
+import dataRepos from '../../data/repos.json';
+import axios from 'axios';
+import { AppError } from '../models/AppError';
+import { Repo } from '../models/Repo';
 
 export const repos = Router();
+
+const client = axios.create({
+  baseURL: process.env.SILVER_ORANGE_BASE_URAL,
+});
 
 repos.get('/', async (_: Request, res: Response) => {
   res.header('Cache-Control', 'no-store');
 
-  res.status(200);
+  try {
+    const { data: silverOrangeRepos } = await client.get<Repo[]>('/repos');
 
-  // TODO: See README.md Task (A). Return repo data here. You’ve got this!
-  res.json([]);
+    res.status(200);
+
+    res.json([...silverOrangeRepos, ...dataRepos].filter((repo) => !repo.fork));
+  } catch (err) {
+    throw new AppError('Internal Server Error');
+  }
 });
