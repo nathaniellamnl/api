@@ -7,7 +7,7 @@ import { Repo } from '../models/Repo';
 export const repos = Router();
 
 const client = axios.create({
-  baseURL: process.env.SILVER_ORANGE_BASE_URAL,
+  baseURL: 'https://api.github.com/users/silverorange',
 });
 
 repos.get('/', async (_: Request, res: Response) => {
